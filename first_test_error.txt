@@ -1,0 +1,2 @@
+Ошибка: 'coroutine' object has no attribute 'username'
+Время: Sun Jan 11 06:09:54 2026

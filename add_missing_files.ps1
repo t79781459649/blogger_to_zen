@@ -1,0 +1,268 @@
+# Скрипт добавления недостающих файлов в существующий проект
+# Запуск: правой кнопкой → "Запустить с PowerShell"
+
+Write-Host "=== Добавление недостающих файлов в проект ===" -ForegroundColor Cyan
+Write-Host "Рабочая директория: $(Get-Location)" -ForegroundColor Yellow
+
+# Проверяем, что мы в правильной папке
+if (-not (Test-Path ".venv") -and -not (Test-Path "create_project.ps1")) {
+    Write-Host "ОШИБКА: Не найден .venv или create_project.ps1" -ForegroundColor Red
+    Write-Host "Запустите скрипт из папки blogger-to-zen" -ForegroundColor Yellow
+    exit 1
+}
+
+Write-Host "✓ Найден существующий проект" -ForegroundColor Green
+
+# 1. Создаем папки (если их нет)
+Write-Host "`n1. Создание недостающих папок..." -ForegroundColor Yellow
+
+$foldersToCreate = @(
+    "src",
+    "data",
+    "data\archive",
+    "data\cache",
+    "logs",
+    "exporters",
+    "tests",
+    "docs"
+)
+
+foreach ($folder in $foldersToCreate) {
+    if (-not (Test-Path $folder)) {
+        New-Item -ItemType Directory -Path $folder -Force | Out-Null
+        Write-Host "  ✓ Создана папка: $folder" -ForegroundColor Green
+    } else {
+        Write-Host "  ✓ Папка уже существует: $folder" -ForegroundColor Gray
+    }
+}
+
+# 2. Создаем основные файлы (только если их нет)
+Write-Host "`n2. Создание основных файлов..." -ForegroundColor Yellow
+
+# config.py (не перезаписываем, если существует)
+if (-not (Test-Path "config.py")) {
+    @"
+import os
+from datetime import datetime
+
+# Базовые пути
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+LOG_DIR = os.path.join(BASE_DIR, 'logs')
+ARCHIVE_DIR = os.path.join(BASE_DIR, 'data', 'archive')
+
+# Telegram настройки
+TELEGRAM = {
+    'bot_token': 'ВАШ_БОТ_ТОКЕН_ЗДЕСЬ',
+    'channel': '@ВАШ_КАНАЛ_ЗДЕСЬ',
+    'admin_id': 'ВАШ_ID_ЗДЕСЬ'
+}
+
+# Список блогов для обработки
+BLOGS = [
+    {
+        'name': 'example_blog',
+        'rss_url': 'https://example.blogspot.com/feeds/posts/default?alt=rss',
+        'enabled': True,
+        'tags': ['блог', 'пример']
+    }
+]
+
+# Настройки архивации (для зеркала в РФ)
+ARCHIVE = {
+    'format': 'html',
+    'create_mirror': True,
+    'compress': True
+}
+
+# Настройки публикации
+PUBLISHING = {
+    'delay_between_posts': 5,
+    'max_posts_per_run': 10,
+    'timezone': 'Europe/Moscow'
+}
+"@ | Out-File -FilePath "config.py" -Encoding UTF8
+    Write-Host "  ✓ Создан: config.py" -ForegroundColor Green
+} else {
+    Write-Host "  ✓ Файл уже существует: config.py" -ForegroundColor Gray
+}
+
+# main.py (не перезаписываем, если существует)
+if (-not (Test-Path "main.py")) {
+    @"
+#!/usr/bin/env python3
+"""
+Основной скрипт пайплайна: Blogger → Telegram → Дзен + Архив
+"""
+import sys
+import os
+import logging
+from datetime import datetime
+
+# Добавляем src в путь
+sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
+
+from config import BLOGS
+
+def main():
+    print("=" * 50)
+    print(f"Запуск пайплайна: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    
+    # Обработка каждого блога
+    for blog_config in BLOGS:
+        if not blog_config['enabled']:
+            print(f"Пропускаем отключенный блог: {blog_config['name']}")
+            continue
+            
+        print(f"Обработка блога: {blog_config['name']}")
+        # Здесь будет основная логика
+        
+    print("=" * 50)
+
+if __name__ == "__main__":
+    main()
+"@ | Out-File -FilePath "main.py" -Encoding UTF8
+    Write-Host "  ✓ Создан: main.py" -ForegroundColor Green
+} else {
+    Write-Host "  ✓ Файл уже существует: main.py" -ForegroundColor Gray
+}
+
+# 3. Создаем файлы в src/ (только если их нет)
+Write-Host "`n3. Создание файлов в src/..." -ForegroundColor Yellow
+
+# src/__init__.py
+if (-not (Test-Path "src\__init__.py")) {
+    "" | Out-File -FilePath "src\__init__.py" -Encoding UTF8
+    Write-Host "  ✓ Создан: src/__init__.py" -ForegroundColor Green
+}
+
+# src/rss_fetcher.py (упрощенная версия)
+if (-not (Test-Path "src\rss_fetcher.py")) {
+    @"
+"""
+Получение RSS с блогов Blogger
+"""
+import feedparser
+
+def fetch_blog_posts(rss_url):
+    '''Получает посты из RSS ленты'''
+    print(f"Запрос RSS: {rss_url}")
+    
+    feed = feedparser.parse(rss_url)
+    posts = []
+    
+    for entry in feed.entries:
+        post = {
+            'id': entry.get('id', ''),
+            'title': entry.get('title', 'Без названия'),
+            'link': entry.get('link', ''),
+            'content': entry.get('summary', ''),
+            'published': entry.get('published', ''),
+        }
+        posts.append(post)
+    
+    print(f"Получено постов: {len(posts)}")
+    return posts
+"@ | Out-File -FilePath "src\rss_fetcher.py" -Encoding UTF8
+    Write-Host "  ✓ Создан: src/rss_fetcher.py" -ForegroundColor Green
+}
+
+# 4. Создаем файлы в exporters/ (только если их нет)
+Write-Host "`n4. Создание файлов в exporters/..." -ForegroundColor Yellow
+
+# exporters/__init__.py
+if (-not (Test-Path "exporters\__init__.py")) {
+    "" | Out-File -FilePath "exporters\__init__.py" -Encoding UTF8
+    Write-Host "  ✓ Создан: exporters/__init__.py" -ForegroundColor Green
+}
+
+# exporters/to_telegram.py (упрощенная версия)
+if (-not (Test-Path "exporters\to_telegram.py")) {
+    @"
+"""
+Отправка постов в Telegram
+"""
+def send_to_telegram(post, blog_config):
+    '''Форматирует пост для Telegram'''
+    message = f"*{post['title']}*\n\n"
+    message += f"{post['content'][:500]}...\n\n"
+    message += f"📖 Читать полностью: {post['link']}"
+    
+    print(f"Отправлено в Telegram: {post['title'][:50]}...")
+    return True
+"@ | Out-File -FilePath "exporters\to_telegram.py" -Encoding UTF8
+    Write-Host "  ✓ Создан: exporters/to_telegram.py" -ForegroundColor Green
+}
+
+# 5. Создаем .gitignore (не перезаписываем, если существует)
+Write-Host "`n5. Создание .gitignore..." -ForegroundColor Yellow
+
+if (-not (Test-Path ".gitignore")) {
+    @"
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Данные
+data/cache/
+logs/
+
+# Системные
+.DS_Store
+Thumbs.db
+"@ | Out-File -FilePath ".gitignore" -Encoding UTF8
+    Write-Host "  ✓ Создан: .gitignore" -ForegroundColor Green
+}
+
+# 6. Создаем requirements.txt (добавляем, если файл пустой)
+Write-Host "`n6. Настройка requirements.txt..." -ForegroundColor Yellow
+
+if (-not (Test-Path "requirements.txt")) {
+    $requirements = @"
+feedparser==6.0.11
+python-telegram-bot==21.10
+requests==2.32.3
+"@
+    $requirements | Out-File -FilePath "requirements.txt" -Encoding UTF8
+    Write-Host "  ✓ Создан: requirements.txt" -ForegroundColor Green
+} else {
+    # Проверяем, есть ли необходимые пакеты
+    $content = Get-Content "requirements.txt" -Raw
+    if (-not $content.Contains("feedparser")) {
+        Add-Content -Path "requirements.txt" -Value "`nfeedparser==6.0.11" -Encoding UTF8
+        Write-Host "  ✓ Добавлен feedparser в requirements.txt" -ForegroundColor Green
+    }
+}
+
+# 7. Создаем пустые файлы-плейсхолдеры
+Write-Host "`n7. Создание placeholder-файлов..." -ForegroundColor Yellow
+
+$placeholders = @(
+    "data\archive\.gitkeep",
+    "data\cache\.gitkeep", 
+    "logs\.gitkeep"
+)
+
+foreach ($file in $placeholders) {
+    if (-not (Test-Path $file)) {
+        New-Item -ItemType File -Path $file -Force | Out-Null
+        Write-Host "  ✓ Создан: $file" -ForegroundColor Green
+    }
+}
+
+# 8. Итог
+Write-Host "`n=== ИТОГ ===" -ForegroundColor Cyan
+Write-Host "Проект успешно обновлен!" -ForegroundColor Green
+Write-Host "`nВаша текущая структура:" -ForegroundColor Yellow
+Get-ChildItem -Recurse -Depth 2 | Select-Object Name, @{Name="Type";Expression={if($_.PSIsContainer){"Папка"}else{"Файл"}}} | Format-Table -AutoSize
+
+Write-Host "`nСледующие шаги:" -ForegroundColor Cyan
+Write-Host "1. Настройте config.py (укажите свои блоги и токены)"
+Write-Host "2. Активируйте виртуальное окружение:"
+Write-Host "   .venv\Scripts\Activate.ps1"
+Write-Host "3. Установите зависимости:"
+Write-Host "   pip install -r requirements.txt"
+Write-Host "4. Протестируйте:"
+Write-Host "   python main.py"
+Write-Host "`nВаше виртуальное окружение (.venv) сохранено!" -ForegroundColor Green

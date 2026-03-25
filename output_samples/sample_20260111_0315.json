@@ -1,0 +1,55 @@
+{
+  "test_posts": [
+    {
+      "id": "post_123",
+      "title": "Sharbat-e-Ghulab (Rooh Afza) Gulab Sharbat Recipe",
+      "link": "https://blog.roses-crimea.ru/2024/01/sharbat.html",
+      "content": "<p>Рецепт персидского напитка... <iframe src=\"https://youtube.com/embed/abc123\"></iframe></p>",
+      "published": "2024-01-15T10:00:00",
+      "labels": [
+        "recipes",
+        "Персия",
+        "напитки"
+      ],
+      "images": [
+        "https://blog.roses-crimea.ru/image1.jpg"
+      ]
+    },
+    {
+      "id": "post_456",
+      "title": "Масло шиповника - делаем сами",
+      "link": "https://blog.roses-crimea.ru/2024/01/rose-oil.html",
+      "content": "<p>Как сделать масло шиповника дома... <a href=\"https://youtu.be/xyz789\">Смотрите видео</a></p>",
+      "published": "2024-01-14T15:30:00",
+      "labels": [
+        "шиповник",
+        "масло",
+        "рецепт"
+      ],
+      "images": [
+        "https://blog.roses-crimea.ru/oil.jpg"
+      ]
+    }
+  ],
+  "seo_tags": {
+    "recipes": [
+      "рецепт с розами",
+      "розовый шарбат",
+      "персидский напиток",
+      "кулинария с цветами"
+    ],
+    "шиповник": [
+      "масло шиповника",
+      "сделать самому",
+      "косметика своими руками",
+      "уход за кожей"
+    ],
+    "общие": [
+      "крымские розы",
+      "роза centifolia",
+      "выращивание роз",
+      "ароматерапия"
+    ]
+  },
+  "generated_at": "2026-01-11T03:15:35.395682"
+}

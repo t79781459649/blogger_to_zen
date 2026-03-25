@@ -1,0 +1,167 @@
+ РАБОЧИЕ МЕТКИ (7):
+    'recipes' - 5 постов
+    'Centifolia' - 2 постов
+    'Crimea' - 1 постов
+    'Турция' - 2 постов
+    'рецепт' - 3 постов
+    'Roses' - 5 постов
+    'шиповник' - 1 постов
+
+? НЕРАБОЧИЕ МЕТКИ (11):
+    'youtube'
+    'масло шиповника'
+    'Персия'
+    'GULKAND MILKSHAKE'
+    'Джуладжубин'
+    'Rose Centifolia'
+    'Crimeo'
+    'David Austin'
+    'масло'
+    'centifolia'
+    'CENTIFOLIA'
+
+?? ЧУВСТВИТЕЛЬНОСТЬ К РЕГИСТРУ:
+   'centifolia' (строчные): 0 постов
+   'Centifolia' (с заглавной): 2 постов
+   ??  Результаты разные! Используйте правильный регистр
+
+======================================================================
+?? РЕКОМЕНДАЦИИ ДЛЯ config.py:
+1. Используйте только метки из раздела 'РАБОЧИЕ МЕТКИ'
+2. Проверьте регистр меток
+3. Начните с 2-3 меток для теста
+======================================================================
+
+?? Результаты сохранены в: crimea_labels_results.json
+(.venv) PS C:\Users\An\Documents\blogger-to-zen> & C:/Users/An/Documents/blogger-to-zen/.venv/Scripts/python.exe c:/Users/An/Documents/blogger-to-zen/main.py
+Traceback (most recent call last):
+  File "c:\Users\An\Documents\blogger-to-zen\main.py", line 15, in <module>
+    from config import BLOGS, PUBLISHING, CONTENT
+  File "c:\Users\An\Documents\blogger-to-zen\config.py", line 5, in <module>
+    load_dotenv()
+  File "C:\Users\An\Documents\blogger-to-zen\.venv\Lib\site-packages\dotenv\main.py", line 356, in load_dotenv
+    return dotenv.set_as_environment_variables()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\An\Documents\blogger-to-zen\.venv\Lib\site-packages\dotenv\main.py", line 92, in set_as_environment_variables
+    if not self.dict():
+           ^^^^^^^^^^^
+  File "C:\Users\An\Documents\blogger-to-zen\.venv\Lib\site-packages\dotenv\main.py", line 76, in dict
+    self._dict = OrderedDict(resolve_variables(raw_values, override=self.override))
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\An\Documents\blogger-to-zen\.venv\Lib\site-packages\dotenv\main.py", line 238, in resolve_variables
+    for (name, value) in values:
+  File "C:\Users\An\Documents\blogger-to-zen\.venv\Lib\site-packages\dotenv\main.py", line 84, in parse
+    for mapping in with_warn_for_invalid_lines(parse_stream(stream)):
+  File "C:\Users\An\Documents\blogger-to-zen\.venv\Lib\site-packages\dotenv\main.py", line 26, in with_warn_for_invalid_lines
+    for mapping in mappings:
+  File "C:\Users\An\Documents\blogger-to-zen\.venv\Lib\site-packages\dotenv\parser.py", line 173, in parse_stream
+    reader = Reader(stream)
+             ^^^^^^^^^^^^^^
+  File "C:\Users\An\Documents\blogger-to-zen\.venv\Lib\site-packages\dotenv\parser.py", line 64, in __init__
+    self.string = stream.read()
+                  ^^^^^^^^^^^^^
+  File "<frozen codecs>", line 322, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xab in position 10: invalid start byte
+
+============
+   
+======================================================================
+ВИЗУАЛЬНАЯ ПРОВЕРКА ПАЙПЛАЙНА
+======================================================================
+
+?? ПОЛУЧЕННЫЕ СТАТЬИ ИЗ BLOGGER:
+----------------------------------------------------------------------
+
+1. Sharbat-e-Ghulab (Rooh Afza) Gulab Sharbat Recipe
+   ?? Ссылка: https://blog.roses-crimea.ru/2024/01/sharbat.html       
+   ?? Дата: 2024-01-15T10:00:00
+   ???  Метки: recipes, Персия, напитки
+   ??  Содержит YouTube ссылки
+   ???  Изображений: 1
+      Первое: https://blog.roses-crimea.ru/image1.jpg
+
+2. Масло шиповника - делаем сами
+   ?? Ссылка: https://blog.roses-crimea.ru/2024/01/rose-oil.html      
+   ?? Дата: 2024-01-14T15:30:00
+   ???  Метки: шиповник, масло, рецепт
+   ??  Содержит YouTube ссылки
+   ???  Изображений: 1
+      Первое: https://blog.roses-crimea.ru/oil.jpg
+
+======================================================================
+?? ОБРАБОТКА КОНТЕНТА (что будет сделано):
+----------------------------------------------------------------------
+
+1. Sharbat-e-Ghulab (Rooh Afza) Gulab Sharb...
+   ? YouTube  Rutube: заменено
+   ???  Изображения: будут сохранены локально
+   ???  Теги для Дзен: recipes, Персия, напитки, розы, крым...
+   ?? Подборка Дзен: <Рецепты с розами>
+
+2. Масло шиповника - делаем сами...
+   ? YouTube нет, оставляем как есть
+   ???  Изображения: будут сохранены локально
+   ???  Теги для Дзен: шиповник, масло, рецепт, розы, крым...
+   ?? Подборка Дзен: <Рецепты с розами>
+
+======================================================================
+?? ШОРТЫ (10-15 секунд):
+----------------------------------------------------------------------
+Источники шортов:
+1. ?? Папка `shorts/` - положите туда видеофайлы
+2. ?? Конфиг `shorts_list.txt` - список ссылок на видео
+3. ???  Вырезать из длинных видео (будет в следующих версиях)
+
+Формат `shorts_list.txt`:
+  https://rutube.ru/video/123456/  # Цветение розы
+  https://rutube.ru/video/789012/  # Приготовление шарбата
+  /local/path/to/shorts/rose_bloom.mp4  # Локальный файл
+
+======================================================================
+?? ТЕГИ ДЛЯ ИНДЕКСАЦИИ (SEO):
+----------------------------------------------------------------------
+
+recipes:
+   #рецепт_с_розами
+   #розовый_шарбат
+   #персидский_напиток
+   #кулинария_с_цветами
+
+шиповник:
+   #масло_шиповника
+   #сделать_самому
+   #косметика_своими_руками
+   #уход_за_кожей
+
+общие:
+   #крымские_розы
+   #роза_centifolia
+   #выращивание_роз
+   #ароматерапия
+
+======================================================================
+?? ЧТО ПРОИСХОДИТ ПРИ ПУБЛИКАЦИИ:
+----------------------------------------------------------------------
+1. ?? Получаем пост из Blogger
+2. ?? Обрабатываем (YouTubeRutube, очистка)
+3. ???  Добавляем теги для Дзен
+4. ?? Кладём в расписание (data/schedule.json)
+5. ? В нужное время:
+    ?? Отправляем в Telegram (python-telegram-bot)
+    ? Telegram возвращает message_id (подтверждение)
+    ?? Telegram автоматически кросс-постит в Дзен
+    ?? Сохраняем результат в logs/published.json
+
+Telegram ОБЯЗАТЕЛЬНО публикует у себя, если нет ошибок!
+Проверка: message_id в ответе = успешная публикация.
+
+?? Пример сохранён в: output_samples/sample_20260111_0315.json
+======================================================================
+
+Done! Congratulations on your new bot. You will find it at t.me/rosescrimeatest_bot. You can now add a description, about section and profile picture for your bot, see /help for a list of commands. By the way, when you've finished creating your cool bot, ping our Bot Support if you want a better username for it. Just make sure the bot is fully operational before you do this.
+
+Use this token to access the HTTP API:
+8099475704:AAEtCKPDVy1ViVD20UzLc8AX01H2bjm8n-A
+Keep your token secure and store it safely, it can be used by anyone to control your bot.
+
+For a description of the Bot API, see this page: https://core.telegram.org/bots/api
