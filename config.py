@@ -22,6 +22,12 @@ BLOGS = [
         'enabled': True,
         'tags': ['centifolia', 'роза', 'крым']
     },
+    {
+        'name': 'proekt_r',
+        'label': 'Проект R',  # Для тестирования
+        'enabled': True,
+        'tags': ['проект r', 'тест']
+    },
     # ... остальные метки
 ]
 

@@ -1,5 +1,6 @@
 import feedparser
 import logging
+from urllib.parse import quote
 
 logger = logging.getLogger(__name__)
 
@@ -10,7 +11,9 @@ class BloggerRSSFetcher:
     def fetch_posts(self, label: str = None, max_results: int = 10):
         """Получает посты из Blogger"""
         if label:
-            url = f"{self.base_url}/-/{label}?alt=rss&max-results={max_results}"
+            # Кодируем метку для URL
+            encoded_label = quote(label, safe='')
+            url = f"{self.base_url}/-/{encoded_label}?alt=rss&max-results={max_results}"
         else:
             url = f"{self.base_url}?alt=rss&max-results={max_results}"
         

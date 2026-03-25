@@ -6,6 +6,7 @@ import os
 import sys
 import json
 import logging
+import argparse
 from datetime import datetime
 
 # Добавляем пути
@@ -120,6 +121,62 @@ class FirstStepPipeline:
         logger.info("=" * 60)
         
         return all_medical_posts, publication_plan
+    
+    def run_test_step(self, label, max_results=2):
+        """Тестовый запуск: сбор постов по одной указанной метке"""
+        logger.info("=" * 60)
+        logger.info(f"ТЕСТОВЫЙ ЗАПУСК: метка '{label}'")
+        logger.info("=" * 60)
+        
+        all_posts = []
+        
+        logger.info(f"🔍 Ищем посты с меткой '{label}'")
+        
+        posts = self.fetcher.fetch_posts(label=label, max_results=max_results)
+        
+        for post in posts:
+            # Обрабатываем контент
+            processed = self.processor.process(post)
+            
+            # Заменяем YouTube на Rutube (ВАЖНО для РФ)
+            if CONTENT['replace_youtube']:
+                processed['content'] = self.youtube_replacer.replace(
+                    processed['content']
+                )
+            
+            # Добавляем теги для Дзен
+            processed['zen_tags'] = self.zen_tagger.generate_tags(
+                processed.get('labels', []),
+                processed.get('content', '')
+            )
+            
+            # Определяем цель поста
+            processed['purpose'] = self._define_purpose(processed)
+            
+            all_posts.append(processed)
+            
+            logger.info(f"  ✅ {processed['title'][:50]}...")
+            logger.info(f"     Цель: {processed['purpose']}")
+        
+        # Сохраняем результат тестового сбора
+        test_file = os.path.join('output_samples', f'test_{label}_{datetime.now().strftime("%Y%m%d_%H%M")}.json')
+        with open(test_file, 'w', encoding='utf-8') as f:
+            json.dump(all_posts, f, ensure_ascii=False, indent=2)
+        logger.info(f"💾 Тестовые посты сохранены: {test_file}")
+        
+        # Создаём простой HTML для просмотра
+        html_content = self._generate_html_preview(all_posts)
+        html_file = os.path.join('output_samples', f'test_{label}_{datetime.now().strftime("%Y%m%d_%H%M")}.html')
+        with open(html_file, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+        logger.info(f"👁️  Визуальный просмотр: {html_file}")
+        
+        logger.info("=" * 60)
+        logger.info(f"ТЕСТОВЫЙ ЗАПУСК ЗАВЕРШЁН!")
+        logger.info(f"Найдено постов: {len(all_posts)}")
+        logger.info("=" * 60)
+        
+        return all_posts
     
     def _add_medical_context(self, post):
         """Добавляем медицинский контекст к посту"""
@@ -304,14 +361,28 @@ class FirstStepPipeline:
 
 def main():
     """Запуск первого шага"""
-    print("🌹" * 30)
+    import sys
+    # Настройка кодировки вывода для Windows
+    if sys.platform == 'win32':
+        sys.stdout.reconfigure(encoding='utf-8')
+    
+    parser = argparse.ArgumentParser(description='Сбор постов с Blogger')
+    parser.add_argument('--label', '-l', help='Метка для тестового сбора (например, "Проект R")')
+    args = parser.parse_args()
+    
+    print("=" * 60)
     print("ПЕРВЫЙ ШАГ: СОЗДАНИЕ БАЗЫ ЗНАНИЙ")
     print("О лечебных розах для бабушек и их внуков")
-    print("🌹" * 30)
+    print("=" * 60)
     
     try:
         pipeline = FirstStepPipeline()
-        posts, plan = pipeline.run_first_step()
+        if args.label:
+            # Тестовый режим: собираем только по одной указанной метке
+            posts = pipeline.run_test_step(label=args.label, max_results=2)
+            plan = []
+        else:
+            posts, plan = pipeline.run_first_step()
         
         print("\n✅ ЧТО СДЕЛАНО:")
         print(f"1. Найдено {len(posts)} постов о лечебных свойствах роз")
